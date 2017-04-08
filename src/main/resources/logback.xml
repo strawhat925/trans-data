@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE configuration>
+<configuration scan="true" scanPeriod="60 seconds" debug="false">
+    <contextName>hcs-rpc-netty</contextName>
+    <property name="log.path" value="logs"/>
+    <property name="log.console.pattern"
+              value="%d{HH:mm:ss.SSS} %contextName [%thread] %-5level %logger{40} - %msg%n"/>
+    <property name="log.file.pattern"
+              value="%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} [%file : %line] %msg%n"/>
+
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>DEBUG</level>
+        </filter>
+        <encoder>
+            <pattern>${log.console.pattern}</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="logfile-debug-netty"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.path}/debug.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log.path}/backup/hcs-rpc-netty.%d{yyyy-MM-dd}.zip</fileNamePattern>
+            <maxHistory>10</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${log.file.pattern}</pattern>
+        </encoder>
+
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>DEBUG</level>
+        </filter>
+    </appender>
+
+    <appender name="logfile-error-netty"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${log.path}/error.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log.path}/backup/error.%d{yyyy-MM-dd}.zip</fileNamePattern>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${log.file.pattern}</pattern>
+        </encoder>
+
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+    </appender>
+
+    <logger name="com.warehouse.data" level="DEBUG,INFO" addtivity="true">
+        <appender-ref ref="logfile-debug-netty"/>
+        <appender-ref ref="logfile-error-netty"/>
+    </logger>
+
+    <root level="DEBUG,INFO">
+        <appender-ref ref="console"/>
+    </root>
+
+</configuration>
