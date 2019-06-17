@@ -41,6 +41,12 @@ public class FileTransferClientHandler extends ChannelInboundHandlerAdapter {
     }
 
 
+    /**
+     * 客户端建立连接成功后调用，编写向服务端写数据逻辑
+     *
+     * @param ctx
+     * @throws Exception
+     */
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         //super.channelActive(ctx);
@@ -49,6 +55,14 @@ public class FileTransferClientHandler extends ChannelInboundHandlerAdapter {
         ctx.writeAndFlush(secure);
     }
 
+
+    /**
+     * 负责读取服务端发来的数据
+     *
+     * @param ctx
+     * @param msg
+     * @throws Exception
+     */
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (msg instanceof Secure) {

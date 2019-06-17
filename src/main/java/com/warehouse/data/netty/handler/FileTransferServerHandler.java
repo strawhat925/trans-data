@@ -32,6 +32,14 @@ public class FileTransferServerHandler extends ChannelInboundHandlerAdapter {
 
     private static String fileDir = "D:\\用户目录\\我的文档\\WeChat Files\\strawhat925\\Image";
 
+
+    /**
+     * 负责读取客户端发来的数据
+     *
+     * @param ctx
+     * @param msg
+     * @throws Exception
+     */
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (msg instanceof RequestFile) {
@@ -69,6 +77,8 @@ public class FileTransferServerHandler extends ChannelInboundHandlerAdapter {
             } else {
                 logger.info("file create success:{},{} > [{}]", requestFile.getFileName(), requestFile.getFileMd5(), ctx.channel().remoteAddress());
                 ResponseFile responseFile = new ResponseFile(start, md5, getFilePath());
+
+                //回复客户端
                 ctx.writeAndFlush(responseFile);
 
                 randomAccessFile.close();

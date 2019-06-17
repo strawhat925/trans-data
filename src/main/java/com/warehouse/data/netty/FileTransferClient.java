@@ -62,10 +62,14 @@ public class FileTransferClient {
         EventLoopGroup boss = new NioEventLoopGroup();
 
         Bootstrap bootstrap = new Bootstrap();
+        //bootstrap.attr()
         try {
+            //1、指定线程模型
             bootstrap.group(boss)
+                    //2、NIO
                     .channel(NioSocketChannel.class)
                     .option(ChannelOption.TCP_NODELAY, true)
+                    //3、IO处理逻辑
                     .handler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         protected void initChannel(SocketChannel socketChannel) throws Exception {
@@ -75,9 +79,18 @@ public class FileTransferClient {
                                     .addLast(new NettyMessageEncoder())
                                     .addLast(new NettyMessageDecoder())
                                     .addLast(new FileTransferClientHandler(requestFile));
+
+                            //socketChannel.attr()
                         }
                     });
-            ChannelFuture future = bootstrap.connect(host, port).sync();
+            //4、建立连接
+            ChannelFuture future = bootstrap.connect(host, port).addListener(future1 -> {
+                if (future1.isSuccess()) {
+                    System.out.println("连接成功");
+                } else {
+                    System.out.println("连接失败");
+                }
+            }).sync();
             future.channel().closeFuture().sync();
         } catch (InterruptedException e) {
             e.printStackTrace();
